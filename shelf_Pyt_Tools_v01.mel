@@ -1,0 +1,502 @@
+global proc shelf_Pyt_Tools_v01 () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Snap one object to another" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "ObjSnap" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Snap" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "parentConstraint.png" 
+        -image1 "parentConstraint.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# Snap Object\n\ndef lyu_ObjSnap():\n    tempConstraint = cmds.parentConstraint( weight=1 , maintainOffset=False )\n    cmds.delete( tempConstraint )\n\nlyu_ObjSnap()\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Toggle local axis on/off" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "AxisUI" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Axis" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "locator.png" 
+        -image1 "locator.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# Display local axis for all selected objects\n\ndef jly_showLocalAxis( yn=True ):\n    # - find all selected objects, return full path name of each one (long=True)\n    jly_objects = cmds.ls( selection=True, long=True )\n    # - loop through every selected objects, display local axis for each one\n    for obj in jly_objects:\n        cmds.setAttr( obj+'.displayLocalAxis', yn )\n\n# - make a window and buttons for Axis Ui\n\ndef AxisUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'ShowHideLocalAxis_Window', exists = True )):\n        print('found existing window, deleting')\n        cmds.deleteUI( 'ShowHideLocalAxis_Window' )\n    # - make the window\n    ShowHideLocalAxisWindow = cmds.window( 'ShowHideLocalAxis_Window' )\n    # - make a column layout\n    cmds.columnLayout( adjustableColumn=True )\n    # - make buttons for display/hide local axis\n    cmds.button( label='display local axis', command='jly_showLocalAxis(yn=True)' )\n    cmds.button( label='hide local axis', command='jly_showLocalAxis(yn=False)' )\n    \n    # - make the window visible on screen\n    cmds.showWindow( ShowHideLocalAxisWindow )\n\n\nAxisUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Set python path to current Maya project" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PPathUI" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PPath" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# Set python path to current maya project\n\ndef PPathUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'PythonPath_Window', exists = True )):\n        print('found existing window, deleting')\n        cmds.deleteUI( 'PythonPath_Window' )\n    \n    # - make a ui window\n    myPythonPathWindow = cmds.window( 'PythonPath_Window' )\n    \n    # - make the window visible on screen\n    cmds.showWindow( myPythonPathWindow )\n    \n    # - find the Maya workspace path\n    myProjDir = cmds.workspace( q=True, rootDirectory=True )\n    \n    # - make the layout that maya demands to put the text into\n    cmds.columnLayout( adjustableColumn=True )\n    \n    cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1,'right',10), columnWidth=((1, 240),(2, 480)) )\n    \n    # - make a place to put my new path string\n    cmds.text( label='New Path to Add the Python Path' )\n    myPathTextField = cmds.textField( text=myProjDir+'scripts/' )\n    \n    # - get back up one level to the single column layout\n    cmds.setParent( '..' )\n    \n    # - make the command to print out the list of paths in the Python Path\n    def printPythonPathList(foo):\n        for s in sys.path:\n            print( ' path --- ', s )\n    \n    # - make the command to add my custom path to the Python path\n    def myCommand(foo):\n        doCmd = True\n        # - query the user input file path and capture the string as pathString\n        pathString = cmds.textField( myPathTextField, q = True, text=True )\n        # - find if my custom path exist in maya path lists, if it does, dont add the path and print WARNING\n        for s in sys.path:\n            if s == pathString:\n                print( 'WARNING', pathString, 'already exists, not adding' )\n                doCmd = False\n        # - if my custom path does not exist in maya path lists, add my path\n        if doCmd:\n            sys.path.append( pathString )\n    \n    # - make a button to add my new path to the python sys path\n    cmds.button( label='Add Projects Scripts Folder specified above to the python path', command=myCommand )\n    \n    # - make another button to print the list of path in Python Path\n    cmds.button( label='Print Python Path', command=printPythonPathList )\n\n\n\nPPathUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Combine many object shapes into one shape" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Many1UI" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Many-1" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# Combine many shapes into one object\n\ndef jly_CombineShapesIntoOneNode( worldSpace=False ):\n\n    # - get a list of all the select objects\n    jly_SelectedNodes = cmds.ls( selection=True, long=True )\n    \n    # - find the last selected node, which will be our new Ctrl object\n    jly_CtrlNode = cmds.ls( selection=True, long=True, tail=True )[0]\n    \n    # - loop through all the selected objects\n    for jly_node in jly_SelectedNodes:\n        # - check if the jly_node is the last selected node, if not, then grab the shape\n        if jly_node != jly_CtrlNode:\n            # - find the shape nodes under the jly_node\n            origShapeNodes = cmds.listRelatives( jly_node, children=True, shapes=True, fullPath=True )\n            # - make a temporary group for duplication\n            tempGrp = cmds.group( empty=True, name='temp_Grp' )\n            \n            # - make the tempGroup match the jly_node transform, keep the objects' orignal transform and world space information (maintainOffset=mo)\n            tempParentCon = cmds.parentConstraint( jly_node, tempGrp, mo=False)\n            tempScaleCon = cmds.scaleConstraint( jly_node, tempGrp, mo=False)\n            cmds.delete( tempParentCon, tempScaleCon )\n            \n            # - temperarily move the shape under the tempGrp\n            origShapeNodes = cmds.parent( origShapeNodes, tempGrp, shape=True, relative=True )\n            # - find the full node path of the relocated shape node\n            origShapeNodes = cmds.listRelatives( tempGrp, children=True, shapes=True, fullPath=True )\n            # - make a duplicate of the tempGrp with the borrowed shape\n            tempDupe = cmds.duplicate( tempGrp, name='dup_Grp' )\n            # - get the path of the duplicate shape node\n            newShapeNodes = cmds.listRelatives( tempDupe, children=True, shapes=True, fullPath=True )\n            # -- put the original shape node back where it belongs\n            cmds.parent( origShapeNodes, jly_node, shape=True, relative=True )\n            \n            # - parent the duplicate nodes under the jly_CtrlNode\n            # - if worldSpace=True, reset the transform so the new shapes stay in the same place; else, move the shape to jly_CtrlNode\n            if worldSpace:\n                cmds.makeIdentity( tempDupe, apply=True )\n                cmds.parent( newShapeNodes, jly_CtrlNode, shape=True, relative=True )\n            else:\n                cmds.parent( newShapeNodes, jly_CtrlNode, shape=True, relative=True )\n            # - clean up the now empty temp groups\n            cmds.delete( tempGrp, tempDupe )\n            \n        else:\n            print( jly_node, 'IS', jly_CtrlNode )\n\n\n# - make a window UI to use the combine shapes command\ndef Many1UI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'CombineShapesIntoOneNode_Window', exists=True )):\n        print( 'found existing UI, deleting' )\n        cmds.deleteUI( 'CombineShapesIntoOneNode_Window' )\n    \n    # - make a new window \n    CombineShapesIntoOneNodeWindow = cmds.window( 'CombineShapesIntoOneNode_Window' )\n    \n    # - make a single column layout inside the window object\n    cmds.columnLayout( adjustableColumn=True )\n    \n    # - make a 2 row column layout for the text label and do True/False of the world space\n    one = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 160), (2, 100)] )\n    cmds.text( label='use World Space' )\n    worldSpace_YN = cmds.intField()\n    cmds.setParent('..')\n    \n    # - make a command that works for the Ctrl\n    def makeCmd(ignore):\n        # - query the interger field user input is 0 or 1 \n        worldSpaceValue = cmds.intField( worldSpace_YN, query=True, value=True)\n        # - run combine shape command with the input interger\n        jly_CombineShapesIntoOneNode( worldSpace=worldSpaceValue )\n    \n    # - make a button to run the command\n    cmds.button ( label='Combine Shapes', command=makeCmd )\n    \n    # - make the window visible on screen\n    cmds.showWindow( CombineShapesIntoOneNodeWindow )\n\n\nMany1UI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Lock/unlock selected attribute(s) on selected object(s)" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "LockUI" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Lock" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# Lock/Unlock attribute for Translate, Rotate, Scale, and Visibility\n\n# - Lock attribute\ndef jly_LockAttr(jlyT=True,jlyR=True,jlyS=True,jlyV=True):\n    # - make a list of selected object (True = run command, False = dont do anything)\n    objs = cmds.ls (sl=True)\n    # - loop through the list, check if T, R, S, V is true or false, if true then lock the attribute\n    for obj in objs:\n        if jlyT:\n            cmds.setAttr (obj+'.tx', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.ty', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.tz', lock=True, keyable=False, channelBox=False)\n        if jlyR:\n            cmds.setAttr (obj+'.rx', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.ry', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.rz', lock=True, keyable=False, channelBox=False)\n        if jlyS:\n            cmds.setAttr (obj+'.sx', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.sy', lock=True, keyable=False, channelBox=False)\n            cmds.setAttr (obj+'.sz', lock=True, keyable=False, channelBox=False)\n        if jlyV:\n            cmds.setAttr (obj+'.v', lock=True, keyable=False, channelBox=False)\n\n\n# - Unlock attribute\ndef jly_UnLockAttr(jlyT=True,jlyR=True,jlyS=True,jlyV=True):\n    objs = cmds.ls (sl=True)\n    # - loop through the list, check if T, R, S, V is true or false, if false then unlock the attribute\n    for obj in objs:\n        if jlyT:\n            cmds.setAttr (obj+'.tx', lock=False, keyable=True )\n            cmds.setAttr (obj+'.ty', lock=False, keyable=True )\n            cmds.setAttr (obj+'.tz', lock=False, keyable=True )\n        if jlyR:\n            cmds.setAttr (obj+'.rx', lock=False, keyable=True )\n            cmds.setAttr (obj+'.ry', lock=False, keyable=True )\n            cmds.setAttr (obj+'.rz', lock=False, keyable=True )\n        if jlyS:\n            cmds.setAttr (obj+'.sx', lock=False, keyable=True )\n            cmds.setAttr (obj+'.sy', lock=False, keyable=True )\n            cmds.setAttr (obj+'.sz', lock=False, keyable=True )\n        if jlyV:\n            cmds.setAttr (obj+'.v', lock=False, keyable=True )\n\n\n\ndef LockUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'LockUnlock_Window', exists=True )):\n        print( 'found existing UI, deleting' )\n        cmds.deleteUI( 'LockUnlock_Window' )\n    # - make the window\n    LockUnlockWindow = cmds.window( 'LockUnlock_Window' )\n    # - make a 1 column layout\n    cmds.columnLayout( adjustableColumn=True )\n    # - make buttons for lock/unlock everything/translate/rotate/scale/visibility\n    cmds.button( label='Lock All', command='jly_LockAttr()' )\n    cmds.button( label='Unlock All', command='jly_UnLockAttr()' )\n    cmds.button( label='Lock Translate', command='jly_LockAttr( jlyR=False, jlyS=False, jlyV=False )' )\n    cmds.button( label='Unlock Translate', command='jly_UnLockAttr( jlyR=False, jlyS=False, jlyV=False )' )\n    cmds.button( label='Lock Rotate', command='jly_LockAttr( jlyT=False, jlyS=False, jlyV=False )' )\n    cmds.button( label='Unlock Rotate', command='jly_UnLockAttr( jlyT=False, jlyS=False, jlyV=False )' )\n    cmds.button( label='Lock Scale', command='jly_LockAttr( jlyT=False, jlyR=False, jlyV=False )' )\n    cmds.button( label='Unlock Scale', command='jly_UnLockAttr( jlyT=False, jlyR=False, jlyV=False )' )\n    cmds.button( label='Lock Visibility', command='jly_LockAttr( jlyT=False, jlyR=False, jlyS=False )' )\n    cmds.button( label='Unlock Visibility', command='jly_UnLockAttr( jlyT=False, jlyR=False, jlyS=False )' )\n    \n    # - make the window visible on screen\n    cmds.showWindow( LockUnlockWindow )\n\n\n\n\nLockUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Make a customizable ball control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Ball" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Ball" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# MakeBall\n\ndef jly_MakeBall (nodeName='Ball_Ctrl',pos=(0,0,0),radius=1,doT=False):\n    # -- make a ball\n    # - create a empty transform node called 'Ball_Ctrl'\n    jly_Ctrl = cmds.createNode( 'transform', name=nodeName )\n    # - only lock scale attribute for the empty transform node, leave translate/rotate/visibility unlocked\n    jly_LockAttr(False,False,True,False)\n    # - create 3 empty nurbCurve shape nodes, parent them under the empty transform node\n    jly_Shape1 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    jly_Shape2 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    jly_Shape3 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    # - create 3 makeNurbCircle nodes\n    jly_Geo1 = cmds.createNode( 'makeNurbCircle' )\n    jly_Geo2 = cmds.createNode( 'makeNurbCircle' )\n    jly_Geo3 = cmds.createNode( 'makeNurbCircle' )\n    \n    # - notes: .cc = .outputCurve, .cr = .create, .nr = .normal, .c  = .center, .r  = .radius\n    # - connect the created geometry nodes (makeNurbCircle) to the shape nodes (nurbsCurve), so the nurbsCurve show up\n    cmds.connectAttr( str(jly_Geo1)+'.oc', str(jly_Shape1)+'.cr' )\n    # - change the normal of the nurbsCurve orientation\n    cmds.setAttr( str(jly_Geo1)+'.nr',1,0,0)\n    # - offset the center position of the circle\n    cmds.setAttr( str(jly_Geo1)+'.c',pos[0],pos[1],pos[2])\n    # - set the radius for the circle\n    cmds.setAttr( str(jly_Geo1)+'.r',radius)\n    # - do the same for another 2 circles\n    cmds.connectAttr( str(jly_Geo2)+'.oc', str(jly_Shape2)+'.cr' )\n    cmds.setAttr( str(jly_Geo2)+'.nr',0,1,0)\n    cmds.setAttr( str(jly_Geo2)+'.c',pos[0],pos[1],pos[2])\n    cmds.setAttr( str(jly_Geo2)+'.r',radius)\n    cmds.connectAttr( str(jly_Geo3)+'.oc', str(jly_Shape3)+'.cr' )\n    cmds.setAttr( str(jly_Geo3)+'.nr',0,0,1)\n    cmds.setAttr( str(jly_Geo3)+'.c',pos[0],pos[1],pos[2])\n    cmds.setAttr( str(jly_Geo3)+'.r',radius)\n    \n    # - make a T control for the ball, create a line between the middle of the ball and the actual pivot\n    if doT:\n        # - make a curve by giving two point, one at the origin, the other at the middle of the ball\n        tmp = cmds.curve( name=nodeName+'_crap', degree=1, p=[(0,0,0),(pos[0],pos[1],pos[2])])\n        # - find the shape node\n        jly_ShapeNodes = cmds.listRelatives( tmp, children=True, shapes=True, fullPath=True )\n        # - parent the shape node under the main control group\n        cmds.parent(jly_ShapeNodes, jly_Ctrl, shape=True, relative=True )\n        # - delete the now empty transform node\n        cmds.delete(tmp)\n    # - leave the created main control group selected\n    cmds.select(jly_Ctrl, replace=True )\n    # - says in the output window what the control made\n    return jly_Ctrl\n\n\n# - Create a window UI for Make Ball\ndef BallUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'BallCtrl_Window', exists=True )):\n        print( 'found existing UI, deleting' )\n        cmds.deleteUI( 'BallCtrl_Window' )\n    \n    # - create the window\n    BallCtrlWindow = cmds.window( 'BallCtrl_Window' )\n    # - create a 1 column layout inside the window\n    cmds.columnLayout( adjustableColumn=True )\n    # - create a 2 row column layout for the name of the Ctrl\n    nodeNameLayout = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - create a label with annotation\n    cmds.text( label='Node Name', ann='Name of the Ball Control'  )\n    # - create a textField with the actual node name you want to use, by default the name is 'Ball_Ctrl'\n    nodeName_Ball = cmds.textField( text='Ball_Ctrl' )\n    # - go up 1 level, out of this column layout\n    cmds.setParent('..')\n    \n    # - create a 4 row column layout for the X, Y, Z position of the Ctrl\n    poslayout = cmds.rowColumnLayout( numberOfColumns=4, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 80), (3, 80), (4, 80)] )\n    # - create text label with annotation (ann = annotation)\n    cmds.text( label='Position', ann='Offset of the Ball Shape\\n from its own center pivot\\n (used for T style contros)'  )\n    # - create 3 floatField for position X, Y, Z\n    posX_Ball = cmds.floatField( value=0 )\n    posY_Ball = cmds.floatField( value=0 )\n    posZ_Ball = cmds.floatField( value=0 )\n    # - go back up 1 level\n    cmds.setParent('..')\n    \n    # - create a 2 row column layout for the radius and the doT of the Ctrl\n    one = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - create text label with annotation\n    cmds.text( label='Radius', ann='Size of the Ball Shape'  )\n    # - create floatField for radius\n    radius_Ball = cmds.floatField( value=1.0 )\n    # - create text label with annotation\n    cmds.text( label='Do T', ann='Add a line from the Control origin to the center of the Ball Shape\\n to make a T style Control'  )\n    # - create a integer field for doT 0 or 1, the default is 0\n    doT_Ball = cmds.intField()\n    # - go back up 1 level\n    cmds.setParent('..')\n    \n    # -- create a command that builds the Ctrl\n    def makeCmd(foo):\n        # - query all the user input and get the information needed for the command\n        nodeNameString = cmds.textField( nodeName_Ball, query=True, text=True )\n        posValueX = cmds.floatField( posX_Ball, query=True, value=True )\n        posValueY = cmds.floatField( posY_Ball, query=True, value=True )\n        posValueZ = cmds.floatField( posZ_Ball, query=True, value=True )\n        posValue = ( posValueX, posValueY, posValueZ )\n        radiusValue = cmds.floatField( radius_Ball, query=True, value=True)\n        doTValue = cmds.intField( doT_Ball, query=True, value=True)\n        # - run the MakeBall command with all the user input\n        jly_MakeBall( nodeName=nodeNameString, pos=posValue, radius=radiusValue, doT=doTValue )\n    \n    # - make a button to run the command, add annotation with it\n    cmds.button ( label='Make Ball Control', command=makeCmd, ann='Make the Ball Control\\n using the options spcified above' )\n    \n    # - make the window visible on screen\n    cmds.showWindow( BallCtrlWindow )\n\n\n\nBallUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Make a customizable pole control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Pole" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Pole" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n#-------------------------------------------------------------------------\n# MakePole\n\ndef jly_MakePole (nodeName='Pole_Ctrl',pos=(0,0,0),radius=1,doT=False):\n    # -- make a pole\n    # - create a empty transform node called 'Pole_Ctrl'\n    jly_Ctrl = cmds.createNode( 'transform', name=nodeName )\n    # - only lock scale attribute for the empty transform node, leave translate/rotate/visibility unlocked\n    jly_LockAttr(False,False,True,False)\n    # - create 3 empty nurbCurve shape nodes, parent them under the empty transform node\n    jly_Shape1 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    jly_Shape2 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    jly_Shape3 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n    # - create 3 makeNurbCircle nodes\n    jly_Geo1 = cmds.createNode( 'makeNurbCircle' )\n    jly_Geo2 = cmds.createNode( 'makeNurbCircle' )\n    jly_Geo3 = cmds.createNode( 'makeNurbCircle' )\n    \n    # - notes: .cc = .outputCurve, .cr = .create, .nr = .normal, .c  = .center, .r  = .radius\n    # - connect the created geometry nodes (makeNurbCircle) to the shape nodes (nurbsCurve), so the nurbsCurve show up\n    cmds.connectAttr( str(jly_Geo1)+'.oc', str(jly_Shape1)+'.cr' )\n    # - change the normal of the nurbsCurve orientation\n    cmds.setAttr( str(jly_Geo1)+'.nr',1,0,0)\n    # - offset the center position of the curve\n    cmds.setAttr( str(jly_Geo1)+'.c',pos[0],pos[1],pos[2])\n    # - set the radius for the curve\n    cmds.setAttr( str(jly_Geo1)+'.r',radius)\n    # - set the degree of the curve to make the Pole shape\n    cmds.setAttr( str(jly_Geo1)+'.degree',1)\n    # - set the sections 4 to make the curve into a square shape\n    cmds.setAttr( str(jly_Geo1)+'.sections',4)\n    # - do the same for another 2 curves\n    cmds.connectAttr( str(jly_Geo2)+'.oc', str(jly_Shape2)+'.cr' )\n    cmds.setAttr( str(jly_Geo2)+'.nr',0,1,0)\n    cmds.setAttr( str(jly_Geo2)+'.c',pos[0],pos[1],pos[2])\n    cmds.setAttr( str(jly_Geo2)+'.r',radius)\n    cmds.setAttr( str(jly_Geo2)+'.degree',1)\n    cmds.setAttr( str(jly_Geo2)+'.sections',4)\n    cmds.connectAttr( str(jly_Geo3)+'.oc', str(jly_Shape3)+'.cr' )\n    cmds.setAttr( str(jly_Geo3)+'.nr',0,0,1)\n    cmds.setAttr( str(jly_Geo3)+'.c',pos[0],pos[1],pos[2])\n    cmds.setAttr( str(jly_Geo3)+'.r',radius)\n    cmds.setAttr( str(jly_Geo3)+'.degree',1)\n    cmds.setAttr( str(jly_Geo3)+'.sections',4)\n    \n    # - make a T control for the ball, create a line between the middle of the ball and the actual pivot\n    if doT:\n        # - make a curve by giving two point, one at the origin, the other at the middle of the ball\n        tmp = cmds.curve( name=nodeName+'_crap', degree=1, p=[(0,0,0),(pos[0],pos[1],pos[2])])\n        # - find the shape node\n        jly_ShapeNodes = cmds.listRelatives( tmp, children=True, shapes=True, fullPath=True )\n        # - parent the shape node under the main control group\n        cmds.parent(jly_ShapeNodes, jly_Ctrl, shape=True, relative=True )\n        # - delete the now empty transform node\n        cmds.delete(tmp)\n    # - leave the created main control group selected\n    cmds.select(jly_Ctrl, replace=True )\n    # - says in the output window what the control made\n    return jly_Ctrl\n\n\n# - Create a window UI for Make Pole\ndef PoleUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window( 'PoleCtrl_Window', exists=True )):\n        print( 'found existing UI, deleting' )\n        cmds.deleteUI( 'PoleCtrl_Window' )\n    \n    # - create the window\n    PoleCtrlWindow = cmds.window( 'PoleCtrl_Window' )\n    # - create a 1 column layout inside the window\n    cmds.columnLayout( adjustableColumn=True )\n    # - create a 2 row column layout for the name of the Ctrl\n    nodeNameLayout = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - create a label with annotation\n    cmds.text( label='Node Name', ann='Name of the Pole Control'  )\n    # - create a textField with the actual node name you want to use, by default the name is 'Pole_Ctrl'\n    nodeName_Pole = cmds.textField( text='Pole_Ctrl' )\n    # - go up 1 level, out of this column layout\n    cmds.setParent('..')\n    \n    # - create a 4 row column layout for the X, Y, Z position of the Ctrl\n    poslayout = cmds.rowColumnLayout( numberOfColumns=4, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 80), (3, 80), (4, 80)] )\n    # - create text label with annotation (ann = annotation)\n    cmds.text( label='Position', ann='Offset of the Pole Shape\\n from its own center pivot\\n (used for T style contros)'  )\n    # - create 3 floatField for position X, Y, Z\n    posX_Pole = cmds.floatField( value=0 )\n    posY_Pole = cmds.floatField( value=0 )\n    posZ_Pole = cmds.floatField( value=0 )\n    # - go back up 1 level\n    cmds.setParent('..')\n    \n    # - create a 2 row column layout for the radius and the doT of the Ctrl\n    one = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - create text label with annotation\n    cmds.text( label='Radius', ann='Size of the Pole Shape'  )\n    # - create floatField for radius\n    radius_Pole = cmds.floatField( value=1.0 )\n    # - create text label with annotation\n    cmds.text( label='Do T', ann='Add a line from the Control origin to the center of the Pole Shape\\n to make a T style Control'  )\n    # - create a integer field for doT 0 or 1, the default is 0\n    doT_Pole = cmds.intField()\n    # - go back up 1 level\n    cmds.setParent('..')\n    \n    # -- create a command that builds the Ctrl\n    def makeCmd(foo):\n        # - query all the user input and get the information needed for the command\n        nodeNameString = cmds.textField( nodeName_Pole, query=True, text=True )\n        posValueX = cmds.floatField( posX_Pole, query=True, value=True )\n        posValueY = cmds.floatField( posY_Pole, query=True, value=True )\n        posValueZ = cmds.floatField( posZ_Pole, query=True, value=True )\n        posValue = ( posValueX, posValueY, posValueZ )\n        radiusValue = cmds.floatField( radius_Pole, query=True, value=True)\n        doTValue = cmds.intField( doT_Pole, query=True, value=True)\n        # - run the MakePole command with all the user input\n        jly_MakePole( nodeName=nodeNameString, pos=posValue, radius=radiusValue, doT=doTValue )\n    \n    # - make a button to run the command, add annotation with it\n    cmds.button ( label='Make Pole Control', command=makeCmd, ann='Make the Pole Control\\n using the options spcified above' )\n    \n    \n    # - make the window visible on screen\n    cmds.showWindow( PoleCtrlWindow )\n\n\nPoleUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Make a customizable label" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Label" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Label" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport maya.cmds as cmds\nimport importlib\nimport time\n\n\n#-------------------------------------------------------------------------\n# MakeLabel\n\n\ndef jly_MakeLabel (nodeName='Label_Ctrl',pos=(0,0,0),radius=1,doT=False,label='abcdef',doCircle=True):\n    # - create an empty transform group named after the input of the 'nodeName' \n    jly_Ctrl = cmds.createNode( 'transform', name=nodeName )\n    # -- make contrl circle\n    if doCircle == True:\n        # - create a nurbsCurve node and parent it under the jly_Ctrl node\n        jly_Shape1 = cmds.createNode( 'nurbsCurve', parent=jly_Ctrl )\n        # - create a makeNurbCircle node\n        jly_Geo1 = cmds.createNode( 'makeNurbCircle' )\n        # - connect the output of the makeNurbCircle geometry node 'jly_Geo1' to the input of the shape node 'jly_Shape1'\n        cmds.connectAttr( str(jly_Geo1)+'.oc', str(jly_Shape1)+'.cr' )\n        # - set the normal so the nurbcircle is flat on the ground plane\n        cmds.setAttr( str(jly_Geo1)+'.nr',0,1,0)\n        # - set the radius of that circle to be the input of 'radius'\n        cmds.setAttr( str(jly_Geo1)+'.r',radius)    \n    \n    # -- create a textCurve with font, actual text = the input of 'label', and capture this textCurve node as textNode\n    textNode = cmds.textCurves( font='Arial', text=label, object=True )\n    # - scale the text to be about the size of the size of the circle\n    cmds.xform( s=(radius*0.25,radius*0.25,radius*0.25) )\n    # - find out the boundingBox size of the text\n    # - use textNode[0] to find the first in the list of the text group, bbx is in worldSpace. Print( bbx ) = ( x Min, y Min, Zmin, x Max, y Max, z Max )\n    bbx = cmds.xform(textNode[0], q=True, bb=True, ws=True)\n    # -- position the Text\n    # - if doT, shift the text and make its center line up with the origin, else then put the text at the side of the origin\n    if doT:\n        # - take Xmax and Ymax of the bbx, roughly put it aside of the origin of X and Y axis\n        cmds.xform( t=(bbx[3]*0.05,-bbx[4]*0.5,0) )\n        # - shift the text according to the input position of 'pos', relative=True\n        cmds.xform( t=(pos[0],pos[1],pos[2]), r=True )\n    else:\n        # - take Xmax and Ymax of the bbx, roughly center the text in X and Y axis\n        cmds.xform( t=(-bbx[3]*0.5,-bbx[4]*1.5,0) )\n        cmds.xform( t=(pos[0],pos[1],pos[2]), r=True )      \n    \n    # - find all the nurbCurves in the text, ad=allDescendents\n    textShapes = cmds.listRelatives( textNode[0], ad=True, type='nurbsCurve', fullPath=True)\n    # - delete text generator node to delete construct history\n    cmds.delete( textNode[1] )\n    # - reset the text to freeze its transform, apply the accumulated transforms\n    cmds.makeIdentity( textNode[0], apply=True )\n    # - parent all nurbCurve shape node under the jly_Ctrl\n    cmds.parent( textShapes, jly_Ctrl, shape=True, relative=True )\n    # - delete the now empty text shape empty groups\n    cmds.delete( textNode[0] )\n    \n    # - make a T control for the label, create a line between the label and the actual pivot\n    if doT:\n        tmp = cmds.curve( name=nodeName+'_crap', degree=1, p=[(0,0,0),(pos[0],pos[1],pos[2])])\n        jly_ShapeNodes = cmds.listRelatives( tmp, children=True, shapes=True, fullPath=True )\n        cmds.parent(jly_ShapeNodes, jly_Ctrl, shape=True, relative=True )\n        cmds.delete(tmp)    \n    # - leave the top node selected\n    cmds.select(jly_Ctrl, replace=True )\n    # - return the name of the node created in the output window\n    return jly_Ctrl\n\n\n# - Create Make Label UI\ndef LabelUI():\n    # - check if window already exists, if it does exists, delete it\n    if (cmds.window(\"LabelCtrl_Window\", exists=True)):\n        cmds.deleteUI(\"LabelCtrl_Window\")\n    \n    # - create a window with fields for entering text\n    labelWindow = cmds.window('LabelCtrl_Window')\n    # - create column layout\n    cmds.columnLayout( adjustableColumn=True )\n    \n    # -- create 2 row column layout for node name\n    nodeNameLayout = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - write text with annotation, ann = annotation\n    cmds.text( label='Node Name', ann='Name of the Label Control' )\n    # - input the name of Label Ctrl\n    nodeName_Label = cmds.textField( text='Label_Ctrl' )\n    # - go back up one level out of the row columns, back to single column\n    cmds.setParent('..')\n    \n    # -- make a 4 row column layout for the position\n    poslayout = cmds.rowColumnLayout( numberOfColumns=4, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 80), (3, 80), (4, 80)] )\n    # - add text 'position' with annotation\n    cmds.text( label='Position', ann='Offset of the Label Shape\\n from its own center pivot\\n (used for T style contros)' )\n    # - make 3 cells for X Y Z value input\n    posX_Label = cmds.floatField( value=0 )\n    posY_Label = cmds.floatField( value=0 )\n    posZ_Label = cmds.floatField( value=0 )\n    cmds.setParent('..')\n    \n    # -- make a 2 row column layout for radius, do T, and circle\n    foo = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1, 'right', 10), columnWidth=[(1, 80), (2, 240)] )\n    # - create text for radius\n    cmds.text( label='Radius', ann='Size of the Label Shape' )\n    # - create float field for radius with a default = 10\n    radius_Label = cmds.floatField( value=10 )\n    # - create text for 'Do T?'\n    cmds.text( label='Do T', ann='Add a line from the Control origin to the base of the Label Shape\\n to make a T style Control' )\n    # - create integer field fot input 1 or 0\n    doT_Label = cmds.intField()\n    # - create text for the visible label text\n    cmds.text( label='Label', ann='Specify the text you want in your Label' )\n    # - create text field for label name input\n    label_Label = cmds.textField( text='your label here' )\n    # - create text for 'Do Circle?'\n    cmds.text( label='Do Circle', ann='Add a cirle at the Control origin to act as the Start Circle' )\n    # - create integer field fot input 1 or 0\n    doCircle_Label = cmds.intField( value=1 )\n    cmds.setParent('..')\n    \n    # - make the command to actually create the label contrl\n    def makeCmd(ignore):\n        # -- query the 6 input and find out what the user put in each of them\n        nodeNameString = cmds.textField( nodeName_Label, query=True, text=True)\n        # - query pos X, pos Y, pos Z and combine them into one line in the posValue\n        posValue = (cmds.floatField( posX_Label, query=True, value=True),cmds.floatField( posY_Label, query=True, value=True),cmds.floatField( posZ_Label, query=True, value=True))\n        radiusValue = cmds.floatField( radius_Label, query=True, value=True)\n        doTValue = cmds.intField( doT_Label, query=True, value=True)\n        labelString = cmds.textField( label_Label, query=True, text=True)\n        doCircleValue = cmds.intField( doCircle_Label, query=True, value=True)\n        # - run the make label command with all the 6 values queried\n        jly_MakeLabel(nodeName=nodeNameString,pos=posValue,radius=radiusValue,doT=doTValue,label=labelString,doCircle=doCircleValue)\n    \n    # - add a button to run the entire command\n    cmds.button ( label='Make Label Control', command=makeCmd, ann='Make the Label Control\\n using the options spcified above' )\n    # - make the window visible on screen\n    cmds.showWindow(labelWindow)\n\n\n\nLabelUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "A gui for easy joints editing." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Joint-Tool" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Re-Joint" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "# create main window\ndef ui():\n    # make sure there is no window exist before create a new one\n    if cmds.window('Joint Tool', ex=True):\n        cmds.deleteUI('Joint Tool')\n    win=cmds.window('Joint Tool')\n    # center the layout\n    cmds.columnLayout(adj=True)\n    \n    # content for recreate joints\n    cmds.text('How to use:')\n    cmds.separator(height=10)\n    cmds.text('1. Select parent joint to recreates joints')\n    cmds.text('2. Input the number of joints you want')\n    cmds.text('3. Generate your new joint chain')\n    cmds.separator(height=10)\n    # give 2 textfield for user input\n    cmds.text('How many new joints do you want?')\n    cmds.textField('joint_number1', h=30)\n    cmds.button('Create Joints', h=40, c='create_new_joint()',  bgc=[0.05,0.7,0.9])\n    # create window \"win\"\n    cmds.showWindow(win)\n    \n###################################################################################################       \n'''\n1. recreate joints\n'''\n# function to create new joints and hide old ones\ndef create_new_joint():\n    # assign variables\n    joint_number=int(cmds.textField('joint_number1', q=True, text=True))\n    \n    # select old joints, and put them in a list\n    original_joint=cmds.ls(sl=True,l=True)[0]\n    # make a new list with old joints and  reverse\n    original_joint_list=cmds.listRelatives(original_joint, ad=True,f=True)\n    original_joint_list.reverse()\n    original_joint_list.insert(0,original_joint)\n    # get position information in list\n    post_list=[cmds.xform(i, q=True, ws=True, t=True) for i in original_joint_list]\n    \n    # create curve along old joints\n    path=cmds.curve(n='post_curve', d=1, p=(post_list))\n    # rebuild curve to set parameter range to 0-1\n    cmds.rebuildCurve(n='path',d=1,kr=0,kcp=True)\n        \n    # hide old joints\n    cmds.hide(original_joint_list)\n    \n    # create new joints, and put them on motionpath one by one\n    motionpath_list=[]\n    joint_group=[]   \n    for i in range(joint_number):\n        cmds.select(cl=True)\n        create_joint=cmds.joint()\n        create_motion_path=cmds.pathAnimation(create_joint, c=path)\n        cmds.setAttr('%s.uValue'%create_motion_path, 1.0/(joint_number-1)*i)\n        motionpath_list.append(create_motion_path)\n        joint_group.append(create_joint)\n        cmds.select(cl=True)\n        \n   \n    # duplicate each joints, put new joints in group and delete old joints\n    new_joint_group=[]\n    for i in joint_group:\n        cmds.select(i)\n        # list connection with each joints and delete\n        selected = cmds.ls(sl=True)[0]\n        disconnected = cmds.listConnections('%s.tx'%selected, plugs=True)[0]\n        cmds.disconnectAttr(disconnected, '%s.tx'%selected)\n        disconnected = cmds.listConnections('%s.ty'%selected, plugs=True)[0]\n        cmds.disconnectAttr(disconnected, '%s.ty'%selected)\n        disconnected = cmds.listConnections('%s.tz'%selected, plugs=True)[0]\n        cmds.disconnectAttr(disconnected, '%s.tz'%selected)\n        \n        joint_dupicate = cmds.duplicate()\n        new_joint_group.append(joint_dupicate)\n        cmds.select(cl=True)\n        cmds.delete(i)\n        \n    # reverse new joint list for parent joints    \n    new_joint_group.reverse()\n    \n    # delete the old curve\n    cmds.delete('post_curve')\n    \n    # parent joints\n    for i in range(int(len(new_joint_group)-1)):\n        cmds.parent(new_joint_group[i],new_joint_group[i+1])\n        \n    # edit x axis for each joint   \n    first_joint=new_joint_group[-1]\n    cmds.select(first_joint)  \n    select_joint = cmds.ls(sl=True)    \n    selected_joint_list = cmds.listRelatives(ad=True, f=True)\n    selected_joint_list.reverse()\n    selected_joint_list.insert(0, select_joint[0])\n    cmds.select(selected_joint_list)\n    \n    select_joint_second_grp = cmds.ls(sl=True)\n    for i in new_joint_group:\n        cmds.joint(e=True, zso=True, oj='xyz', sao='yup')\n        \n# call functions\nui()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "A gui to create controls for selected joint chain." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Do-Controls" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "DoCtrl" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import maya.cmds as cmds\n\n# Create the main function of the controller chain: create controls for selected joint chain\ndef create_controls_from_joint_chain(radius=3.0, axis='Y', name_prefix='ctrl'):\n    \"\"\"\n    Create FK control chain for selected joint and its children, excluding the last terminal joint.\n\n    Args:\n        radius (float): Size of control circles.\n        axis (str): Orientation axis of the control shape ('X', 'Y', 'Z').\n        name_prefix (str): Prefix for naming controls.\n    \"\"\"\n    if not cmds.ls(sl=True, type='joint'):\n        cmds.warning(\"Please select the root joint.\")\n        return\n\n    # Define axis direction for circle\n    axis_dict = {'X': (1, 0, 0), 'Y': (0, 1, 0), 'Z': (0, 0, 1)}\n    if axis not in axis_dict:\n        cmds.warning(\"Invalid axis. Use 'X', 'Y', or 'Z'.\")\n        return\n    orient = axis_dict[axis]\n\n    # Get full joint chain\n    root_joint = cmds.ls(sl=True, l=True)[0]\n    all_joints = cmds.listRelatives(root_joint, ad=True, type='joint', f=True) or []\n    all_joints.append(root_joint)\n    all_joints.reverse()\n\n    if len(all_joints) < 2:\n        cmds.warning(\"Joint chain too short to skip end joint.\")\n        return\n\n    joints_to_rig = all_joints[:-1]  # skip end joint\n    ctrl_list = []\n\n    for joint in joints_to_rig:\n        pos = cmds.xform(joint, q=True, ws=True, t=True)\n        short_name = joint.split('|')[-1]\n        ctrl_name = f\"{name_prefix}_{short_name}_CTRL\"\n        grp_name = f\"{ctrl_name}_GRP\"\n\n        ctrl = cmds.circle(n=ctrl_name, nr=orient, r=radius)[0]\n        grp = cmds.group(ctrl, n=grp_name)\n        cmds.xform(grp, ws=True, t=pos)\n        cmds.makeIdentity(ctrl, apply=True, t=1, r=1, s=1, n=0)\n        cmds.parentConstraint(ctrl, joint, mo=True)\n\n        ctrl_list.append((ctrl, grp))\n\n    for i in range(len(ctrl_list) - 1):\n        cmds.parent(ctrl_list[i + 1][1], ctrl_list[i][0])\n\n    cmds.select(clear=True)\n    print(\"? FK controls created. End joint skipped.\")\n\n\n# Get value from UI and execute function when button is clicked\ndef on_create_button(*args):\n    try:\n        radius = float(cmds.textField('radiusField', q=True, text=True))\n        axis = cmds.textField('axisField', q=True, text=True).upper()\n        name_prefix = cmds.textField('prefixField', q=True, text=True)\n\n        if axis not in ['X', 'Y', 'Z']:\n            cmds.warning(\"Axis must be X, Y or Z.\")\n            return\n        if not name_prefix:\n            name_prefix = \"ctrl\"\n\n        create_controls_from_joint_chain(radius=radius, axis=axis, name_prefix=name_prefix)\n\n    except ValueError:\n        cmds.warning(\"Invalid radius. Please enter a number.\")\n\n# create ui window\ndef ui():\n    if cmds.window('ControlToolWin', exists=True):\n        cmds.deleteUI('ControlToolWin')\n\n    win = cmds.window('ControlToolWin', title='FK Control Tool', widthHeight=(300, 250))\n    cmds.columnLayout(adjustableColumn=True)\n\n    cmds.text(label='How to use:')\n    cmds.separator(h=5, style='in')\n    cmds.text(label='1. Select the root joint')\n    cmds.text(label='2. Adjust the settings below')\n    cmds.text(label='3. Click to generate FK controls')\n    cmds.separator(h=10, style='in')\n\n    cmds.text(label='Control Radius:')\n    cmds.textField('radiusField', h=30, text='3.0')\n\n    cmds.text(label='Control Axis (X/Y/Z):')\n    cmds.textField('axisField', h=30, text='Y')\n\n    cmds.text(label='Name Prefix:')\n    cmds.textField('prefixField', h=30, text='ctrl')\n\n    cmds.separator(h=10)\n    cmds.button(label='Create FK Control Chain', h=40, bgc=[0.1, 0.7, 0.9], c=on_create_button)\n\n    cmds.showWindow(win)\n\n# run UI\nui()\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 12
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "A gui to plant a certain number of selected object on a selected surface." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "SeedPlanter" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "SeedP" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nimport random\n\nclass CreateBuildingsUI:\n    def __init__(self):\n        # create empty node for grouping and delete constrain later\n        self.ground = None\n        self.seed_objects = []\n        self.instances = []\n        self.seed_group = \"seed_group\"\n        \n        cmds.createNode('transform', n='const_group')\n        \n        # if seed_group exist, delete it\n        if cmds.objExists(self.seed_group):\n            cmds.delete(self.seed_group)\n        cmds.group(em=True, name=self.seed_group)\n        \n        # if window exist, delete it\n        if cmds.window('BuildingToolUI', exists=True):\n            cmds.deleteUI('BuildingToolUI')\n        \n        # create ui window\n        self.win = cmds.window('BuildingToolUI', title='Building Scatter Tool', sizeable=False)\n        cmds.columnLayout(adj=True, rs=5, columnAlign='center')\n\n        cmds.separator(h=8)\n        cmds.text(label='1. Select your ground object (surface)')\n        cmds.button(label='Set Selected as Ground', c=self.set_ground)\n\n        self.ground_label = cmds.text(label='Ground: None', align='left')\n\n        cmds.separator(h=8)\n        cmds.text(label='2. Select object(s) to plant')\n        cmds.button(label='Set Selected as Seeds', c=self.set_seeds)\n        self.seed_label = cmds.text(label='Seeds: None', align='left')\n\n        cmds.separator(h=8)\n        self.num_field = cmds.intFieldGrp(label='Instances:', value1=20)\n\n        cmds.button(label='Create Instances', bgc=(0.4, 0.8, 0.6), h=30, c=self.create_instances)\n        \n        self.x_scale_slider = cmds.floatSliderGrp(label='X Scale', field=True, min=0.1, max=5.0, value=1.0)\n        self.y_scale_slider = cmds.floatSliderGrp(label='Y Scale', field=True, min=0.1, max=5.0, value=1.0)\n        self.z_scale_slider = cmds.floatSliderGrp(label='Z Scale', field=True, min=0.1, max=5.0, value=1.0)\n        cmds.button(label='Apply Scaling', c=self.scale)\n\n        self.rot_fields = cmds.floatFieldGrp(label='Rotate XYZ', numberOfFields=3, value1=0, value2=0, value3=0)\n        cmds.button(label='Apply Rotation', c=self.rotate)\n\n        cmds.button(label='Random Collapse', bgc=(1, 0.6, 0.3), c=self.collapse)\n\n        cmds.separator(h=8)\n        cmds.button(label='Clear Instances', bgc=(1, 0.3, 0.3), c=self.clear)\n\n        cmds.showWindow(self.win)\n    \n    ### define surface\n    def set_ground(self, *_):\n        sel = cmds.ls(sl=True)\n        if sel:\n            self.ground = sel[0]\n            cmds.text(self.ground_label, e=True, label=f'Ground: {self.ground}')\n        else:\n            cmds.warning(\"Please select a ground object.\")\n    ### define seed\n    def set_seeds(self, *_):\n        sel = cmds.ls(sl=True)\n        if sel:\n            self.seed_objects = sel\n            cmds.text(self.seed_label, e=True, label=f'Seeds: {\", \".join(self.seed_objects)}')\n        else:\n            cmds.warning(\"Please select at least one seed object.\")\n    ### random plant seeds onto the surface\n    def create_instances(self, *_):\n        count = cmds.intFieldGrp(self.num_field, q=True, value1=True)\n        if not self.ground:\n            cmds.warning(\"No ground object set.\")\n            return\n\n        # Clear previous\n        self.clear()\n\n        # Get size of ground\n        bound = cmds.exactWorldBoundingBox(self.ground)\n        min_x, min_y, min_z, max_x, max_y, max_z = bound\n        range_x = max_x - min_x\n        range_z = max_z - min_z\n        range_y = max_y - min_y\n        \n        for i in range(count):\n            if self.seed_objects:\n                src = random.choice(self.seed_objects)\n                inst = cmds.instance(src, name=f'inst_{i}')[0]\n            else:\n                inst = cmds.polyCube(name=f'building_{i}', w=1, h=2, d=1)[0]\n\n            x = random.uniform(min_x, max_x)\n            z = random.uniform(min_z, max_z)\n            cmds.move(x, 0, z, inst)\n            cmds.parent(inst, self.seed_group)\n            self.instances.append(inst)\n\n            if self.ground:\n                const = cmds.geometryConstraint(self.ground, inst, w=1)\n                cmds.delete(const)  # only snap once\n    ### scale all seeds\n    def scale(self, *_):\n        x_scale_value = cmds.floatSliderGrp(self.x_scale_slider, q=True, value=True)\n        y_scale_value = cmds.floatSliderGrp(self.y_scale_slider, q=True, value=True)\n        z_scale_value = cmds.floatSliderGrp(self.z_scale_slider, q=True, value=True)\n        for inst in self.instances:\n            cmds.scale(x_scale_value, y_scale_value, z_scale_value, inst)\n    ### random rotate\n    def rotate(self, *_):\n        x, y, z = cmds.floatFieldGrp(self.rot_fields, q=True, value=True)\n        for inst in self.instances:\n            cmds.rotate(x, y, z, inst)\n    ### random collapse\n    def collapse(self, *_):\n        for inst in self.instances:\n            rx = random.uniform(-180, 180)\n            ry = random.uniform(-180, 180)\n            rz = random.uniform(-180, 180)\n            cmds.rotate(rx, ry, rz, inst)\n            \n    ### delete constrains, use after all are done\n    def clear(self, *_):\n        for inst in self.instances:\n            if cmds.objExists(inst):\n                cmds.delete(inst)\n        self.instances = []\n\nCreateBuildingsUI()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Preview selected height map on a cube you created." 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "HeightPrev" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "HeightPrev" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nimport maya.mel as mel\nimport random\n\n# create main window\ndef ui():\n    # make sure there is no window exist before create a new one\n    if cmds.window('Customized Surface', ex=True):\n        cmds.deleteUI('Customized Surface')\n    win = cmds.window('Customized Surface')\n    # ui layout   \n    cmds.columnLayout(adjustableColumn=True)\n    cmds.frameLayout(label='1. Create Your PolyCube for Testing')\n\n    # content\n    # size\n    cmds.text('Scale X', h=20)\n    cmds.textField('scale_x_input', h=30)\n    cmds.text('Scale Z', h=20)\n    cmds.textField('scale_z_input', h=30)\n    cmds.text('Scale Y', h=20)\n    cmds.textField('scale_y_input', h=30)\n    \n    # subdivision\n    cmds.text('Subdivision Width', h=20)\n    cmds.textField('sub_width_input', h=30)\n    cmds.text('Subdivision Height', h=20)\n    cmds.textField('sub_height_input', h=30)\n    cmds.text('Subdivision Depth', h=20)\n    cmds.textField('sub_depth_input', h=30)\n    cmds.button('Create Test Cube', c='create_shape()', h=40, bgc=[0.6,0.5,0.9])\n    \n    \n    cmds.separator(height=10)\n\n    # texture deformer\n    cmds.frameLayout( label='2. File Name of Your Alapha Texture' )\n    cmds.text('(example: moon.jpg)')\n    cmds.textField('my_file_name_input', text=True, vis=True, h=30, sbm='File Name: Input file name of a texture')\n    cmds.button('Apply Alpha', c='texture_deform()', h=40, bgc=[0.2,0.5,0.7])\n    \n\n    cmds.separator(height=10)\n\n    # clear test\n    cmds.frameLayout( label='3. Delete Test PolyCube' )\n    cmds.button('Delete', c='clear()', h=40, bgc=[0.1,0.7,0.5])\n    \n    # create window \"win\"\n    cmds.showWindow(win)\n\n\n\n\ndef create_shape():\n    # create mesh\n    my_name = 'land'\n    cube = cmds.polyCube(sd=50, sh=4, sw=50, n=my_name)   \n    # set size\n    scale_x = int(cmds.textField('scale_x_input', q=True, text=True))\n    scale_z = int(cmds.textField('scale_z_input', q=True, text=True))\n    scale_y = int(cmds.textField('scale_y_input', q=True, text=True))\n    cmds.setAttr('%s.scaleX' %my_name, scale_x)\n    cmds.setAttr('%s.scaleZ' %my_name, scale_z)\n    cmds.setAttr('%s.scaleY' %my_name, scale_y)   \n    # set sub division\n    sub_width = int(cmds.textField('sub_width_input', q=True, text=True))\n    sub_height = int(cmds.textField('sub_height_input', q=True, text=True))\n    sub_depth = int(cmds.textField('sub_depth_input', q=True, text=True))\n    get_history = cmds.listHistory(cube)\n    my_history = get_history[-1]\n    my_subwidth = my_history + '.subdivisionsWidth'\n    my_subheigth = my_history + '.subdivisionsHeight'\n    my_subdepth = my_history + '.subdivisionsDepth'\n    cmds.setAttr(my_subwidth, sub_width)\n    cmds.setAttr(my_subheigth, sub_height)\n    cmds.setAttr(my_subdepth, sub_depth)\n    \n\ndef clear():\n    # delete test object\n    cmds.delete('land')\n           \ndef texture_deform():\n    # user input\n    my_file_name = cmds.textField('my_file_name_input', q=True, text=True)\n    # create texture deformer\n    my_deformer = cmds.textureDeformer(envelope=1, strength=1, offset=0, vectorStrength=(1, 1, 1), vectorOffset=(0, 0, 0), vectorSpace=\"Object\" ,direction=\"Handle\", pointSpace=\"UV\", exclusive=\"\")\n    # create new shader node\n    my_shader = 'ha_shader'\n    shader=cmds.shadingNode('lambert',asShader=True, n=my_shader)\n    # create file node\n    fileNode = cmds.shadingNode('file', asTexture=True, isColorManaged=True)\n    # create shading node\n    fileNode2d = cmds.shadingNode('place2dTexture', asUtility=True)\n    # apply texture\n    my_file_adress = ('sourceimages/alpha_pack/' + my_file_name)\n    shading_group = cmds.sets(renderable=True,noSurfaceShader=True,empty=True)\n    cmds.setAttr( '%s.fileTextureName'%fileNode, my_file_adress, type = 'string')\n    # link file node to texture deformer\n    cmds.connectAttr(fileNode + '.outColor', 'textureDeformer1' + '.texture', f=True)\n\nui()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Generate 3 patterns" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Pattern Generator" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Pattern" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import maya.cmds as cmds\nimport math as math\n\n\n# create main window\ndef ui():\n    # make sure there is no window exist before create a new one\n    if cmds.window('Three Design', ex=True):\n        cmds.deleteUI('Three Design')\n    win=cmds.window('Three Design')\n    # center the layout\n    cmds.columnLayout(adj=True)\n    \n    # content for the first design Phtllotactic pattern\n    cmds.separator(height=20)\n    cmds.text('First Design Creates Phtllotactic Pattern')\n    cmds.separator(height=10)\n    # give 3 textfield for user input\n    cmds.text('How many sphere do you want? (Recommend 300)')\n    cmds.textField('t1', h=30)\n    cmds.text('Put the radius of your sphere(Recommend 4):')\n    cmds.textField('radius1', h=30)\n    cmds.text('Put the space between your sphere(Recommend 4):')\n    cmds.textField('cspread1', h=30)\n    cmds.button('Phtllotactic Design', h=40, c='drawPhyllotacticPattern()', bgc=[0.5,0.1,0.2])\n    \n    # content for the second design circle Pattern\n    cmds.separator(height=50)\n    cmds.text('Second Design Creates Circle Pattern')\n    cmds.separator(height=10)\n    # give 1 textfield for user input\n    cmds.text('How wide your circle spread? (Recommend 180)')\n    cmds.textField('circleDegree1', h=30)\n    cmds.button('Circle Design', h=40, c='CirclePattern()',  bgc=[0.2,0.1,0.3])\n    \n    # content for the third design square Pattern\n    cmds.separator(height=50)\n    cmds.text('Third Design Creates Square Pattern')\n    cmds.separator(height=10)\n    # give 2 textfield for user input\n    cmds.text('How many square do you want? (Recommend 100)')\n    cmds.textField('numSquare1', h=30)\n    cmds.text('How big your square in the center is? (Recommend 2)')\n    cmds.textField('size1', h=30)\n    cmds.button('Square Design', h=40, c='SquarePattern()',  bgc=[0.8,0.2,0.8])\n    \n    # create window \"win\"\n    cmds.showWindow(win)\n    \n###################################################################################################\n'''\n1. create 3 designs\n'''\n# a function that makes a Phtllotactic Pattern\n# t=how many sphere you want, radius=radius of sphere, cspread=space between spheres\ndef drawPhyllotacticPattern():\n    # assign variables\n    radius=int(cmds.textField('radius1', q=True, text=True))\n    cspread=int(cmds.textField('cspread1', q=True, text=True))\n    t=int(cmds.textField('t1', q=True, text=True))\n    angle = 137.508\n    phi = angle * ( math.pi / 180.0 ) \n    xcenter = 0.0\n    ycenter = 0.0\n    # create group node\n    design1grp=cmds.createNode(\"transform\", name='Phtllotactic_Pattern')\n    # for loops iterate from the first value until < 4 \n    for n in range(t): \n        r = cspread * math.sqrt(n) \n        theta = n * phi \n        # equation for transform x and z                  \n        x = r * math.cos(theta) + xcenter \n        y = r * math.sin(theta) + ycenter       \n        # draw sphere  \n        drawSphere = cmds.sphere(r=radius)[0]\n        cmds.xform(drawSphere, t=(x,0,y))\n        # put the whole pattern in a group\n        cmds.parent(drawSphere, design1grp)\n        \n###################################################################################################\n# a function that draws a circle pattern\n# circleDegree=the degree those circle spread \ndef CirclePattern():\n    # assign variables\n    circleDegree=int(cmds.textField('circleDegree1', q=True, text=True))\n    # create group node\n    design2grp=cmds.createNode(\"transform\", name='Circle_Pattern')\n    #cmds.createNode(\"transform\", name='Circle_Pattern2')\n    # a loop to rotate and scale circles\n    for i in range(circleDegree):\n        degree=i\n        # equation to draw a circle\n        radian=i/180.0*math.pi\n        x=math.cos(radian)\n        y=math.sin(radian)\n        z=i*0.01\n        # draw circles on y axis side\n        drawCircle1=cmds.circle(r=1+i*0.01)[0]\n        cmds.xform(drawCircle1, t=(x,y,z))\n        # put circles in a group\n        cmds.parent(drawCircle1, design2grp)\n        # draw circles on -y axis side\n        drawCircle2=cmds.circle(r=1+i*0.01)[0]\n        cmds.xform(drawCircle2, t=(-x,-y,-z))\n        # put circles in a second group\n        cmds.parent(drawCircle2, design2grp)\n\n###################################################################################################\n# a function that draws a square pattern\n# numSquare=the number of squares, size=size of the center square\ndef SquarePattern():\n    # assign variables\n    numSquare=int(cmds.textField('numSquare1', q=True, text=True))\n    size=int(cmds.textField('size1', q=True, text=True))\n    # create group node\n    design3grp=cmds.createNode(\"transform\", name='Square_Pattern')\n    # a loop to rotate and scale squares\n    for i in range(numSquare):\n        z=2*math.sin(i)\n        drawSquare=cmds.nurbsSquare(sl1=size*0.1+i*0.01, sl2=size*0.1+i*0.01)[0]\n        cmds.xform(drawSquare, r=True, ro=(0,0,5*i), t=(0,0,z))\n        # put squares in a group\n        cmds.parent(drawSquare, design3grp)\n\n\n###################################################################################################\n# call functions\nui()" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+
+} 
