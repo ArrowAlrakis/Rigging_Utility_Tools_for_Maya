@@ -1,5 +1,6 @@
 # Rigging Utility Tools for Maya
 [Shelf Preview](./Preview.png)
+
 A curated shelf of 13 productivity-enhancing Maya Python tools.
 Created by Arrow Lyu, this set includes tools for rigging, modeling, scene interaction, and utility support.
 
@@ -10,20 +11,26 @@ Created by Arrow Lyu, this set includes tools for rigging, modeling, scene inter
 
 # Python Scripts
 
-📄 [Python_Tools_Utilities_v01.py](./Scripts/Python_Tools_Utilities_v01.py) – Contains the functions for the first 8 buttons on the shelf, including modules:
-#       1. Object Snap
-#       2. Show/Hide Local Axis
-#       3. Add current project path to Maya python path
-#       4. Combine many object shapes into one
-#       5. Lock/Unlock Attributes UI
-#       6. Create Ball control UI
-#       7. Create Pole control UI
-#       8. Create Label UI
+📄 [Python_Tools_Utilities_v01.py](./Scripts/Python_Tools_Utilities_v01.py) – Contains the functions for the first 8 buttons on the shelf, including modules: 
+1. Object Snap.
+2. Show/Hide Local Axis.
+3. Add current project path to Maya python path.
+4. Combine many object shapes into one.
+5. Lock/Unlock Attributes UI.
+6. Create Ball control UI.
+7. Create Pole control UI.
+8. Create Label UI.
+
 📄 [RebuildJointChain_v01.py](./Scripts/RebuildJointChain_v01.py) – Rebuilds selected joint chains with adjustable resolution using motion paths.
+
 📄 [DoControl_v01.py](./Scripts/DoControl_v01.py) – Generates custom control curves and assigns them to selected objects.
+
 📄 [SeedPlanter_v02.py](./Scripts/SeedPlanter_v02.py) – Scatters seed objects randomly on a selected surface, now includes a rearrange() feature and Outliner group organization.
+
 📄 [HeightPreview_v01.py](./Scripts/HeightPreview_v01.py) – Creates preview bars to visualize object heights in world space.
+
 📄 [RebuildJointChain_v01.py](./Scripts/RebuildJointChain_v01.py) – Rebuilds selected joint chains with adjustable resolution using motion paths.
+
 📄 [ThreeDesign_v01.py](./Scripts/ThreeDesign_v01.py) – Generates a quick 3D design concept with layered primitive geometry.
 
 # Overview
