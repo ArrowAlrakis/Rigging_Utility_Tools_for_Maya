@@ -38,9 +38,10 @@ This shelf contains 13 buttons covering: Control creation and assignment; Random
 Most tools are accessible through simple Maya UI popups or one-click shelf actions. Scripts are written in Python using maya.cmds and tested in Maya 2020–2025.
 
 
-# Demo Video
+# Demo
 
-▶ [Watch full utility tool demo](<>)
+▶ Watch the full utility tool demo: [Watch on Vimeo](https://vimeo.com/1097705399/0b1e4d3d17)
+
 
 ---
 
