@@ -21,17 +21,15 @@ Created by Arrow Lyu, this set includes tools for rigging, modeling, scene inter
 7. Create Pole control UI.
 8. Create Label UI.
 
-📄 [RebuildJointChain_v01.py](./Scripts/RebuildJointChain_v01.py) – Rebuilds selected joint chains with adjustable resolution using motion paths.
+📄 [RebuildJointChain_v01.py](./Scripts/RebuildJointChain_v01.py) – Rebuild the existing joint chain with the desired joint count using motion paths.
 
-📄 [DoControl_v01.py](./Scripts/DoControl_v01.py) – Generates custom control curves and assigns them to selected objects.
+📄 [DoControl_v01.py](./Scripts/DoControl_v01.py) – Generates custom control curves and assigns them to the selected joint chain.
 
-📄 [SeedPlanter_v02.py](./Scripts/SeedPlanter_v02.py) – Scatters seed objects randomly on a selected surface, now includes a rearrange() feature and Outliner group organization.
+📄 [SeedPlanter_v02.py](./Scripts/SeedPlanter_v02.py) – Scatters selected objects randomly on a selected surface, including scale, rotation, and clear feature.
 
-📄 [HeightPreview_v01.py](./Scripts/HeightPreview_v01.py) – Creates preview bars to visualize object heights in world space.
+📄 [HeightPreview_v01.py](./Scripts/HeightPreview_v01.py) – Creates a preview box to fast visualize height maps in the viewport.
 
-📄 [RebuildJointChain_v01.py](./Scripts/RebuildJointChain_v01.py) – Rebuilds selected joint chains with adjustable resolution using motion paths.
-
-📄 [ThreeDesign_v01.py](./Scripts/ThreeDesign_v01.py) – Generates a quick 3D design concept with layered primitive geometry.
+📄 [ThreeDesign_v01.py](./Scripts/ThreeDesign_v01.py) – Generates 3 types of 3D patterns with layered primitive geometry.
 
 # Overview
 
